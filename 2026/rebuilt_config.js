@@ -6,11 +6,11 @@ const config_data = `
     "checkboxAs": "10",
     "prematch": [
         {
-            "name": "Scouter Initials",
+            "name": "Scouter Name",
             "code": "s",
             "type": "scouter",
-            "size": 5,
-            "maxSize": 5,
+            "size": 9,
+            "maxSize": 7,
             "defaultValue": "",
             "required": "true"
         },
@@ -19,6 +19,7 @@ const config_data = `
             "code": "e",
             "type": "event",
             "defaultValue": "2026txbel",
+            "size": 9,
             "required": "true"
         },
         {
@@ -62,7 +63,7 @@ const config_data = `
             "type": "team",
             "min": 1,
             "max": 99999,
-	    "required": "true"
+	        "required": "true"
         },
         {
             "name": "Auto Start Position",
@@ -74,11 +75,6 @@ const config_data = `
         }
     ],
     "auton": [
-        {
-            "name": "Left Starting Zone",
-            "code": "las",
-            "type": "bool"
-        },
         {
             "name": "Auto Notes",
             "code": "an",
@@ -96,14 +92,24 @@ const config_data = `
     ],
     "teleop": [
         {
-            "name": "Defense Timer",
-            "code": "dt",
-            "type": "timer"
+            "name": "Defense Notes",
+            "code": "dn",
+            "type": "text",
+            "size": 15,
+            "defaultValue": "",
+            "maxSize": 100
         },
         {
-            "name": "Was Defended",
-            "code": "wd",
-            "type": "bool"
+            "name": "Robot Niche",
+            "code": "rn",
+            "type": "radio",
+            "choices": {
+                "cl": "Clean Up&emsp;",
+                "cy": "Cycler<br>",
+                "pa": "Passer&emsp;&emsp;",
+                "de": "Defense"
+            },
+            "defaultValue": "cy"
         },
         {
             "name": "Fouls",
@@ -124,8 +130,8 @@ const config_data = `
     ],
     "endgame": [
         {
-            "name": "Barge Status",
-            "code": "bs",
+            "name": "Climb Status",
+            "code": "cs",
             "type": "radio",
             "choices": {
                 "s": "Shallow",
