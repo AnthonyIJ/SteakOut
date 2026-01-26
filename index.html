@@ -1,124 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Scouting PASS</title>
-		<link rel="shortcut icon" href="favicon.ico">
-		<link rel="icon" sizes="16x16 32x32 64x64" href="favicon.ico">
-		<script src="resources/js/easy.qrcode.min.js"></script>
-		<script src="resources/js/TBAInterface.js"></script>
-		<script src="2026/rebuilt_config.js"></script>
 
-		<script src="resources/js/scoutingPASS_generalSetup.js"></script>
-		<script src="resources/js/scoutingPASS_themeSetup.js"></script>
-		<script src="resources/js/formSetup/formSetup_2026.js"></script>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Scouting PASS</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="favicon.ico">
+	<script src="resources/js/easy.qrcode.min.js"></script>
+	<script src="resources/js/TBAInterface.js"></script>
+	<script src="2026/rebuilt_config.js"></script>
 
-		<link id="stylesheet" rel="stylesheet" href="resources/css/bbqScoutingPASS_RGBColorTheme.css">
-	</head>
+	<script src="resources/js/scoutingPASS_generalSetup.js"></script>
+	<script src="resources/js/scoutingPASS_themeSetup.js"></script>
+	<script src="resources/js/formSetup/formSetup_2026.js"></script>
 
-	<body>
-		<form id="scoutingForm" onsubmit="return false" name="scoutingForm">
-			<div id="main-panel-holder">
+	<link id="stylesheet" rel="stylesheet" href="resources/css/bbqScoutingPASS_RGBColorTheme.css">
+</head>
 
-				<!--PREMATCH-->
-				<div id="prematch" class="main-panel" style="background-color: black;">
-					<h1 id="prematchHeader1" class="page_title"></h1>
-					<h2 id="prematchHeader2">Pre-Match</h2>
-					<p class="match-label">
-						<!--<input type="button" onclick="nextStylesheet()" value="Toggle Theme">
+<body>
+	<form id="scoutingForm" onsubmit="return false" name="scoutingForm">
+		<div id="main-panel-holder">
+
+			<!--PREMATCH-->
+			<div id="prematch" class="main-panel" style="background-color: black;">
+				<h1 id="prematchHeader1" class="page_title"></h1>
+				<h2 id="prematchHeader2">Pre-Match</h2>
+				<p class="match-label">
+					<!--<input type="button" onclick="nextStylesheet()" value="Toggle Theme">
 						<br><br> SCOUTS DON'T GET TO CHOOSE THEIR THEMES >:) -->
-						<input type="button" value="Next" id="nextButton1" onclick="swipePage(1)">
-					</p>
-					<table id="prematch_table">
+					<input type="button" value="Next" id="nextButton1" onclick="swipePage(1)">
+				</p>
+				<table id="prematch_table">
 					<!-- ###PRE-MATCH-COMPONENTS###-->
-					</table>
-					<p class="match-label"><input type="button" value="Next" id="nextButton2" onclick="swipePage(1)"></p>
-				</div>
-
-				<!--AUTON-->
-				<div id="auton" class="main-panel" style="background-color: black;">
-					<h1 id="autonHeader1" class="page_title"></h1>
-					<h2 id="autonHeader2">Auton</h2>
-					<p id="weewoo1" class="match-label">
-						<input type="button" value="Prev" id="prevButton1" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton3" onclick="swipePage(1)">
-						<br><br>
-					</p>
-					<table id="auton_table">
-					<!-- ###AUTON-COMPONENTS###-->
-					</table>
-					<p class="match-label">
-						<input type="button" value="Prev" id="prevButton2" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton4" onclick="swipePage(1)">
-					</p>
-				</div>
-
-				<!--TELEOP-->
-				<div id="teleop" class="main-panel" style="background-color: black;">
-					<h1 id="teleopHeader1" class="page_title"></h1>
-					<h2 id="teleopHeader2" >Teleop</h2>
-					<p id="weewoo2" class="match-label">
-						<input type="button" value="Prev" id="prevButton3" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton5" onclick="swipePage(1)">
-						<br><br>
-					</p>
-					<table id="teleop_table">
-						<!-- ###TELEOP-COMPONENTS###-->
-					</table>
-					<p class="match-label">
-						<input type="button" value="Prev" id="prevButton4" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton6" onclick="swipePage(1)">
-					</p>
-				</div>
-
-				<!--ENDGAME-->
-				<div id="endgame" class="main-panel" style="background-color: black;">
-					<h1 id="endgameHeader1" class="page_title"></h1>
-					<h2 id="endgameHeader2">Endgame</h2>
-					<p id="weewoo3" class="match-label">
-						<input type="button" value="Prev" id="prevButton5" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton7" onclick="swipePage(1)">
-						<br><br>
-					</p>
-					<table id="endgame_table">
-						<!-- ###ENDGAME-COMPONENTS###-->
-					</table>
-					<p class="match-label"><input type="button" value="Prev" id="prevButton6" onclick="swipePage(-1)"> <input type="button" value="Next" id="nextButton8" onclick="swipePage(1)"></p>
-				</div>
-
-				<!--POSTMATCH-->
-				<div id="post-match" class="main-panel" style="background-color: black;">
-					<h1 id="postmatchHeader" class="page_title"></h1>
-					<h2>Miscellaneous</h2>
-					<p id="weewoo4" class="match-label">
-						<input type="button" value="Prev" id="prevButton7" onclick="swipePage(-1)">
-						<input type="button" value="Next" id="nextButton9" onclick="swipePage(1)">
-						<br><br>
-					</p>
-					<table id="postmatch_table">
-						<!-- ###POST-MATCH-COMPONENTS###-->
-					</table>
-					<p class="match-label"><input type="button" value="Prev" id="prevButton8" onclick="swipePage(-1)"> <input type="button" value="Next" id="nextButton10" onclick="swipePage(1)"></p>
-				</div>
-
-				<!--QRCODE-->
-				<div id="qr-code" class="main-panel" style="background-color: white;">
-					<h1 id="qrHeader1" class="page_title"></h1>
-					<h2 id="qrHeader2">Generate QR Code</h2>
-					<p class="match-label"><input type="button" value="Prev" id="prevButton9" onclick="swipePage(-1)"></p>
-					<p id="qr-info"><span id="display_qr-info" style="border: none; text-align: center;"></span></p>
-					<table id="qr-table">
-						<tr><td>&nbsp;</td><td width="90%"><div id="qrcode" style="text-align:center"><script>qr = new QRCode(document.getElementById("qrcode"), options)</script></div></td><td width="5%">&nbsp;</td></tr>
-						<tr><td width="5%">&nbsp;</td><td width="90%"><div><p id="data" style="text-align:center"></p></div></td><td width="5%">&nbsp;</td></tr>
-					</table>
-					<p></p>
-					<p class="match-label"><input type="button" value="Display Data" id="displayButton" onclick="displayData()"><input type="button" value="Copy Data" id="copyButton" onclick="copyData()"></p>
-					<div id="submitButton"><button id="submit" type="submit" class="submitForm">Send to Google Sheets</button></div>
-					<div id="clearButton"><button type="button" class="clearForm" onclick="clearForm()">Clear Form</button></div>
-					<br>
-				</div>
-
+				</table>
+				<p class="match-label"><input type="button" value="Next" id="nextButton2" onclick="swipePage(1)"></p>
 			</div>
-		</form>
-	</body>
+
+			<!--AUTO-->
+			<div id="auto" class="main-panel" style="background-color: black;">
+				<h1 id="autoHeader1" class="page_title"></h1>
+				<h2 id="autoHeader2">Auto</h2>
+				<p id="weewoo1" class="match-label">
+					<input type="button" value="Prev" id="prevButton1" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton3" onclick="swipePage(1)">
+					<br><br>
+				</p>
+				<table id="auto_table">
+					<!-- ###AUTO-COMPONENTS###-->
+				</table>
+				<p class="match-label">
+					<input type="button" value="Prev" id="prevButton2" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton4" onclick="swipePage(1)">
+				</p>
+			</div>
+
+			<!--TELEOP-->
+			<div id="teleop" class="main-panel" style="background-color: black;">
+				<h1 id="teleopHeader1" class="page_title"></h1>
+				<h2 id="teleopHeader2">Teleop</h2>
+				<p id="weewoo2" class="match-label">
+					<input type="button" value="Prev" id="prevButton3" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton5" onclick="swipePage(1)">
+					<br><br>
+				</p>
+				<table id="teleop_table">
+					<!-- ###TELEOP-COMPONENTS###-->
+				</table>
+				<p class="match-label">
+					<input type="button" value="Prev" id="prevButton4" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton6" onclick="swipePage(1)">
+				</p>
+			</div>
+
+			<!--ENDGAME-->
+			<div id="endgame" class="main-panel" style="background-color: black;">
+				<h1 id="endgameHeader1" class="page_title"></h1>
+				<h2 id="endgameHeader2">Endgame</h2>
+				<p id="weewoo3" class="match-label">
+					<input type="button" value="Prev" id="prevButton5" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton7" onclick="swipePage(1)">
+					<br><br>
+				</p>
+				<table id="endgame_table">
+					<!-- ###ENDGAME-COMPONENTS###-->
+				</table>
+				<p class="match-label"><input type="button" value="Prev" id="prevButton6" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton8" onclick="swipePage(1)"></p>
+			</div>
+
+			<!--POSTMATCH-->
+			<div id="post-match" class="main-panel" style="background-color: black;">
+				<h1 id="postmatchHeader" class="page_title"></h1>
+				<h2>Miscellaneous</h2>
+				<p id="weewoo4" class="match-label">
+					<input type="button" value="Prev" id="prevButton7" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton9" onclick="swipePage(1)">
+					<br><br>
+				</p>
+				<table id="postmatch_table">
+					<!-- ###POST-MATCH-COMPONENTS###-->
+				</table>
+				<p class="match-label"><input type="button" value="Prev" id="prevButton8" onclick="swipePage(-1)">
+					<input type="button" value="Next" id="nextButton10" onclick="swipePage(1)"></p>
+			</div>
+
+			<!--QRCODE-->
+			<div id="qr-code" class="main-panel" style="background-color: white;">
+				<h1 id="qrHeader1" class="page_title"></h1>
+				<h2 id="qrHeader2">Generate QR Code</h2>
+				<p class="match-label"><input type="button" value="Prev" id="prevButton9" onclick="swipePage(-1)"></p>
+				<p id="qr-info"><span id="display_qr-info" style="border: none; text-align: center;"></span></p>
+				<table id="qr-table">
+					<tr>
+						<td>&nbsp;</td>
+						<td width="90%">
+							<div id="qrcode" style="text-align:center">
+								<script>qr = new QRCode(document.getElementById("qrcode"), options)</script>
+							</div>
+						</td>
+						<td width="5%">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="5%">&nbsp;</td>
+						<td width="90%">
+							<div>
+								<p id="data" style="text-align:center"></p>
+							</div>
+						</td>
+						<td width="5%">&nbsp;</td>
+					</tr>
+				</table>
+				<p></p>
+				<p class="match-label"><input type="button" value="Display Data" id="displayButton"
+						onclick="displayData()"><input type="button" value="Copy Data" id="copyButton"
+						onclick="copyData()"></p>
+				<div id="submitButton"><button id="submit" type="submit" class="submitForm">Send to Google
+						Sheets</button></div>
+				<div id="clearButton"><button type="button" class="clearForm" onclick="clearForm()">Clear Form</button>
+				</div>
+				<br>
+			</div>
+
+		</div>
+	</form>
+</body>
+
 </html>

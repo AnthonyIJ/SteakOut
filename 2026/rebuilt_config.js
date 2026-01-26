@@ -48,12 +48,12 @@ const config_data = `
             "code": "r",
             "type": "robot",
             "choices": {
-                "r1": "Red-1",
-                "b1": "Blue-1<br>",
-                "r2": "Red-2",
-                "b2": "Blue-2<br>",
-                "r3": "Red-3",
-                "b3": "Blue-3"
+                "r1": "Red 1",
+                "b1": "Blue 1<br>",
+                "r2": "Red 2",
+                "b2": "Blue 2<br>",
+                "r3": "Red 3",
+                "b3": "Blue 3"
             },
             "required": "true"
         },
@@ -74,7 +74,7 @@ const config_data = `
             "shape": "circle 4 white orangered true"
         }
     ],
-    "auton": [
+    "auto": [
         {
             "name": "Auto Notes",
             "code": "an",
@@ -87,39 +87,21 @@ const config_data = `
             "name": "Bicycle",
             "code": "teleopbicycle",
             "type": "bicycle",
-            "bicycle_id": "auton"
+            "bicycle_id": "auto"
         }
     ],
     "teleop": [
-        {
-            "name": "Defense Notes",
-            "code": "dn",
-            "type": "text",
-            "size": 15,
-            "defaultValue": "",
-            "maxSize": 100
-        },
         {
             "name": "Robot Niche",
             "code": "rn",
             "type": "radio",
             "choices": {
-                "cl": "Clean Up&emsp;",
+                "cl": "Cleaner&ensp;",
                 "cy": "Cycler<br>",
-                "pa": "Passer&emsp;&emsp;",
-                "de": "Defense"
+                "pa": "Passer&emsp;",
+                "de": "Defense/Stealing"
             },
             "defaultValue": "cy"
-        },
-        {
-            "name": "Fouls",
-            "code": "fo",
-            "type": "counter"
-        },
-        {
-            "name": "Algae Removal",
-            "code": "ar",
-            "type": "counter"
         },
         {
             "name": "Bicycle",
@@ -134,11 +116,12 @@ const config_data = `
             "code": "cs",
             "type": "radio",
             "choices": {
-                "s": "Shallow",
-                "fs": "Failed<br>",
-                "d": "&nbsp;Deep &nbsp;",
-                "fd": "Failed<br>",
-                "p": "Parked<br>",
+                "l3": "L3",
+                "f3": "Failed<br>",
+                "l2": "L2",
+                "f2": "Failed<br>",
+                "l1": "L1",
+                "f1": "Failed<br>",
                 "x": "n/a"
             },
             "defaultValue": "x"
@@ -157,42 +140,17 @@ const config_data = `
     ],
     "postmatch": [
         {
-            "name": "Was Fouled",
-            "code": "wf",
-            "type": "bool"
-        },
-        {
-            "name": "Defense Rating",
-            "code": "dr",
-            "type": "radio",
-            "choices": {
-                "0": "Below Average<br>",
-                "1": "Average<br>",
-                "2": "Good<br>",
-                "3": "Excellent<br>",
-                "x": "Did not play defense"
-            },
-            "defaultValue": "x"
-        },
-        {
-            "name": "Tippiness",
-            "code": "tip",
-            "type": "radio",
-            "choices": {
-                "4": "Solid<br>",
-                "3": "<br>",
-                "2": "<br>",
-                "1": "<br>",
-                "0": "Tipped<br>"
-            },
-            "defaultValue": "2"
+            "name": "Defense Notes",
+            "code": "dn",
+            "type": "text",
+            "size": 15,
+            "defaultValue": ""
         },
         {
             "name": "Notes",
             "code": "co",
             "type": "text",
-            "size": 15,
-            "maxSize": 100
+            "size": 15
         }
     ]
 }`;

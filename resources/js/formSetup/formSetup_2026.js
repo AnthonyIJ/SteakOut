@@ -2,7 +2,6 @@
 
 // === Bicycle & Cycle data ===
 let requiredFields = ["e", "m", "l", "r", "s", "t", "as"];  // What are these again...?  (Prob from first init. page)
-let prev_cycle_end_time = null
 let cycles = []
 let isFlipped = false;
 let recordTeleopCycleTime = false;
@@ -10,41 +9,36 @@ let recordTeleopCycleTime = false;
 // Cycle class
 class Cycle {
     static src_condense_map = new Map([
-        ["p1", "1"],
-        ["p2", "2"],
-        ["p3", "3"],
-        ["cs", "c"],
-        ["os", "o"],
-        ["pl", "p"],// preload
+        ["p", "p"],
+        ["d", "d"],
+        ["o", "o"],
+        ["n", "nz"],
         ['x', "x"] //no source
     ])
-    static target_condense_map = new Map([
-        ['L1', 1],
-        ['L2', 2],
-        ['L3', 3],
-        ['L4', 4],
-        ['pro', "p"],
-        ['net', "n"],
+    static volley_condense_map = new Map([
+        ['10', 10],
+        ['20', 20],
+        ['30', 30],
+        ['40', 40],
+        ['50', 50],
         ["x", "x"]
     ])
 
-    constructor(gametime, source, score_loc, target, status, time) {
-        this.gametime = gametime  // 1=auton, 2=teleop
-        this.source = source;      // 0=hp_ground, 1=hp_other, 2=o.g.auton i.e. auton_leftover, 3=ground
+    constructor(gametime, source, score_loc, volley, percentage) {
+        this.gametime = gametime  // 1=auto, 2=teleop
+        this.source = source;      // p=preload, d=depot, o=outpost, n=neutral zone, f=fed, c=collected
         this.score_loc = score_loc;   // zone_id {xy} format
-        this.target = target;      // 0=partner, 1=amp, 2=speaker, 3=amplified_speaker
-        this.status = status;      // 0=unsuccessful, 1=successful
-        this.time = time;
+        this.volley = volley;      // numbers yay
+        this.percentage = percentage;      // 0=unsuccessful, 1=successful
     }
     condense() {
-        // gsxytftime
-        // g = gametime (auton / teleop)
+        // gsxyvp
+        // g = gametime (auto / teleop)
         // s = source
         // x, y = grid_x, grid_y
-        // t = target
-        // f = successful?
-        // time = {x}y.z
-        return `${this.gametime}${this.source}${this.score_loc}${this.target}${this.status}${this.time}`
+        // v = volley
+        // p = percentage
+        return `${this.gametime}${this.source}${this.score_loc}${this.volley}${this.percentage}`
     }
 
     toString() {
@@ -56,7 +50,7 @@ class Cycle {
 function nextSuccessfulCycle(code_identifier) {
     let cycleText;
     if (code_identifier.endsWith('a')) {
-        cycleText = 'Auton'
+        cycleText = 'Auto'
     } else {
         cycleText = 'Teleop'
     }
@@ -73,32 +67,6 @@ function nextSuccessfulCycle(code_identifier) {
     }
     let break_component = document.getElementById(`break_${code_identifier}break`)
     break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles")) + 1).toString())
-    break_component.setAttribute("prev_cycle_end_time", Date.now().toString())
-    break_component.innerHTML = `${cycleText} Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
-}
-
-// Called on the nextFailedCycle
-function nextFailedCycle(code_identifier) {
-    let cycleText;
-    if (code_identifier.endsWith('a')) {
-        cycleText = 'Auton'
-    } else {
-        cycleText = 'Teleop'
-    }
-
-    let undefined_vars = saveCycle(code_identifier, 0)
-    if (undefined_vars.length > 0) {  // More than 0 undefined vars  // TODO: WHat is this
-        alert(`Missing fields in ${cycleText} Cycle Form: ${undefined_vars.join(', ')}`)
-        return
-    }
-    try {
-        //clearCycle(code_identifier)
-    } catch (e) {
-        alert(e)
-    }
-    let break_component = document.getElementById(`break_${code_identifier}break`)
-    break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles")) + 1).toString())
-    break_component.setAttribute("prev_cycle_end_time", Date.now().toString())
     break_component.innerHTML = `${cycleText} Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 }
 
@@ -111,15 +79,6 @@ function saveCycle(code_identifier, successful) {
     if (code_identifier.endsWith('a')) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-        if (Number.isInteger(src_value)) {
-            if (isFlipped) {
-                src_value = -src_value + 4;
-            }
-            if (getRobot().charAt(0) === 'r') {
-                src_value = -src_value + 4;
-            }
-        }
-
     } else {
         src = "x"
         src_value = "x"
@@ -135,11 +94,11 @@ function saveCycle(code_identifier, successful) {
         scoreloc_value = "x";
     }
 
-    let tar = Form[`${code_identifier}tar`]
-    let tar_value = Cycle.target_condense_map.get(tar.value ? tar.value.replace(/"/g, '').replace(/;/g, "-") : "");
+    let vol = Form[`${code_identifier}vol`]
+    let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
-    //let success = Form[`${code_identifier}success`]
-    let success_value = successful /*success.checked ? 1 : 0*/;
+    let per = Form[`${code_identifier}per`]
+    let per_value = per.value
 
     let gametime = code_identifier.endsWith('a') ? 1 : 2
 
@@ -147,31 +106,24 @@ function saveCycle(code_identifier, successful) {
     if (src_value === undefined) {
         undefined_vars.push('\"Source\"')
     }
-    if ((scoreloc_value === null || scoreloc_value === 'null') && (tar_value !== "p" && tar_value !== "n")) {
+    if ((scoreloc_value === null || scoreloc_value === 'null')) {
         undefined_vars.push('\"Score Location\"')
     }
-    if (tar_value === undefined) {
-        undefined_vars.push('\"Target\"')
+    if (vol_value === undefined) {
+        undefined_vars.push('\"Initial Fuel\"')
     }
     if (undefined_vars.length > 0) {
         return undefined_vars
     }
 
     let break_component = document.getElementById(`break_${code_identifier}break`)
-    let prev_cycle_end_time;
-    if (break_component.hasAttribute("prev_cycle_end_time")) {
-        prev_cycle_end_time = parseInt(break_component.getAttribute("prev_cycle_end_time"))
-    } else {
-        prev_cycle_end_time = 0
-    }
 
     let cycle = new Cycle(
         gametime,
         src_value,
         scoreloc_value,
-        tar_value,
-        success_value,
-        prev_cycle_end_time === 0 ? 0.0 : ((Date.now() - prev_cycle_end_time) / 1000).toFixed(1),
+        vol_value,
+        per_value
     )
     cycles.push(cycle)
     return []
@@ -246,7 +198,6 @@ function clearCycle(code_identifier) {
                         }
                         intervalIdField.value = '';
                         if (e.className === "cycle") {
-                            document.getElementById("cycletime_" + code).value = "[]"
                             document.getElementById("display_" + code).value = ""
                         }
                     }
@@ -280,7 +231,7 @@ function addNextSuccessfulCycleButton(table, idx, name, data, code_identifier) {
     inp.setAttribute("id", "input_" + data.code);
     inp.setAttribute("type", "button");
     inp.setAttribute("onclick", `nextSuccessfulCycle(\"${code_identifier}\")`)
-    inp.setAttribute("value", "Next Cycle")
+    inp.setAttribute("value", "Next Volley") //inp.setAttribute("value", "Next Cycle")
     inp.setAttribute("name", data.code);
     if (data.hasOwnProperty('defaultValue')) {
         inp.setAttribute("value", data.defaultValue);
@@ -290,89 +241,17 @@ function addNextSuccessfulCycleButton(table, idx, name, data, code_identifier) {
     }
     cell2.appendChild(inp);
     return idx + 1;
-}
-
-// Adds a next failed cycle button to the current
-function addNextFailedCycleButton(table, idx, name, data, code_identifier) {
-    let row = table.insertRow(idx);
-    let cell1 = row.insertCell(0);
-    cell1.classList.add("title");
-    if (!data.hasOwnProperty('code')) {
-        cell1.innerHTML = `Error: No code specified for ${name}`;
-        return idx + 1;
-    }
-    cell1.innerHTML = name + '&nbsp;';
-    let cell2 = row.insertCell(1)
-    let inp = document.createElement("input");
-    inp.setAttribute("id", "input_" + data.code);
-    inp.setAttribute("type", "button");
-    inp.setAttribute("onclick", `nextFailedCycle(\"${code_identifier}\")`)
-    inp.setAttribute("value", "Next Cycle")
-    inp.setAttribute("name", data.code);
-    if (data.hasOwnProperty('defaultValue')) {
-        inp.setAttribute("value", data.defaultValue);
-    }
-    if (data.hasOwnProperty('disabled')) {
-        inp.setAttribute("disabled", "");
-    }
-    cell2.appendChild(inp);
-    return idx + 1;
-}
-
-// Adds a reset cycle time button to the current
-function addResetCycleTimeButton(table, idx, name, data, code_identifier) {
-    let row = table.insertRow(idx);
-    let cell1 = row.insertCell(0);
-    cell1.classList.add("title");
-    if (!data.hasOwnProperty('code')) {
-        cell1.innerHTML = `Error: No code specified for ${name}`;
-        return idx + 1;
-    }
-    cell1.innerHTML = name + '&nbsp;';
-    if (data.hasOwnProperty('tooltip')) {
-        cell1.setAttribute("title", data.tooltip);
-    }
-    let cell2 = row.insertCell(1)
-    let inp = document.createElement("input");
-    inp.setAttribute("id", "input_" + data.code);
-    inp.setAttribute("type", "button");
-    inp.setAttribute("onclick", `resetCycleTime(\"${code_identifier}\")`)
-    inp.setAttribute("value", "Start / Reset")
-    inp.setAttribute("name", data.code);
-    if (data.hasOwnProperty('defaultValue')) {
-        inp.setAttribute("value", data.defaultValue);
-    }
-    if (data.hasOwnProperty('disabled')) {
-        inp.setAttribute("disabled", "");
-    }
-    cell2.appendChild(inp)
-    setInterval(function () {
-        let break_component = document.getElementById(`break_${code_identifier}break`)
-        let r = break_component.getAttribute('prev_cycle_end_time')
-        if (r === null) {
-            inp.setAttribute("value", `Start (0)`)
-        } else {
-            r = ((Date.now() - r) / 1000).toFixed(1)
-            inp.setAttribute("value", `Reset (${r})`)
-        }
-    }, 10);
-    return idx + 1;
-}
-
-function resetCycleTime(code_identifier) {
-    let break_component = document.getElementById(`break_${code_identifier}break`)
-    break_component.setAttribute("prev_cycle_end_time", Date.now().toString())
 }
 
 bicycle_component_identifier = 'cycle'
 
 // Add bicycle
 function addBicycle(table, idx, name, data) {
-    // Is this bicycle the auton or teleop bicycle?
-    let code_identifier = bicycle_component_identifier + ((data.bicycle_id === 'auton') ? 'a' : 't');
+    // Is this bicycle the auto or teleop bicycle?
+    let code_identifier = bicycle_component_identifier + ((data.bicycle_id === 'auto') ? 'a' : 't');
 
     // Create the title display (called "break") component for this bicycle component
-    let break_name = (data.bicycle_id === 'auton') ? 'Auton' : 'Teleop';
+    let break_name = (data.bicycle_id === 'auto') ? 'Auto' : 'Teleop';
     let break_data = JSON.parse(`{
             "name": "${break_name} Cycle Form:",
             "code": "${code_identifier}break",
@@ -380,32 +259,19 @@ function addBicycle(table, idx, name, data) {
         }`)
     idx = addBreak(table, idx, break_data.name, break_data)
 
-    // Add reset cycle time button to bicycle
-    let reset_cycle_time_button_data = JSON.parse(`
-  { 
-    "name": "Cycle Time:",
-    "code": "${code_identifier}reset_cycle_time",
-    "type": "resetCycleTimeButton"
-  }`)
-    if (code_identifier === bicycle_component_identifier + 't' && recordTeleopCycleTime) {
-        idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
-    }
-    
     let source_data;
-    if (code_identifier === bicycle_component_identifier + 'a') { // Auton
+    if (code_identifier === bicycle_component_identifier + 'a') { // Auto
         source_data = JSON.parse(`{ 
      "name": "Source",
      "code": "${code_identifier}src",
      "type": "radio",
      "choices": {
-        "p1": "1    ",
-        "pl": "Preload<br>",
-        "p2": "2    ",
-        "os": "Opponent piece<br>",
-        "p3": "3    ",
-        "cs": "Coral Station"
+        "p": "Preload&emsp;",
+        "d": "Depot<br>",
+        "o": "Outpost&emsp;",
+        "n": "Neutral Zone"
      },
-     "defaultValue": "pl"
+     "defaultValue": "p"
      }`)
     } else {  // Teleop intake
         source_data = JSON.parse(`{ 
@@ -413,18 +279,13 @@ function addBicycle(table, idx, name, data) {
      "code": "${code_identifier}src",
      "type": "radio",
      "choices": {
-      "hpg": "HP Ground<br>",
-      "hpo": "HP (other)<br>",
-      "oga": "O.G. Auton<br>",
-      "g": "Ground<br>",
-      "ap": "Alliance Partner"
+      "f": "Fed&emsp;",
+      "c": "Collected"
      },
-     "defaultValue": "hpg"
+     "defaultValue": "f"
      }`)
     }
-    if (code_identifier === bicycle_component_identifier + 'a') {
-        idx = addRadio(table, idx, source_data.name, source_data) // Source
-    }
+    idx = addRadio(table, idx, source_data.name, source_data)
 
     // Add Score Location component (name used to have "Score Location")
     let score_loc_data = JSON.parse(`{
@@ -435,45 +296,94 @@ function addBicycle(table, idx, name, data) {
       "clickRestriction": "one",
       "shape": "rect 4 white orangered true"
   }`)
+    idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
+
+    // add volley data component
+    let volley_data;
     if (code_identifier === bicycle_component_identifier + 'a') {
-        idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
+        volley_data = JSON.parse(`
+        { 
+            "name": "Initial Fuel",
+            "code": "${code_identifier}vol",
+            "type": "radio",
+            "choices": {
+            "10": "10&ensp;",
+            "20": "20&ensp;",
+            "30": "30&ensp;",
+            "40": "40&ensp;",
+            "50": "50"
+            },
+            "defaultValue": "10"
+        }`)
+    } else {
+        volley_data = JSON.parse(`
+        { 
+            "name": "Initial Fuel",
+            "code": "${code_identifier}vol",
+            "type": "radio",
+            "choices": {
+            "10": "10&ensp;",
+            "20": "20&ensp;",
+            "30": "30&ensp;",
+            "40": "40&ensp;",
+            "50": "50"
+            },
+            "defaultValue": "30"
+        }`)
     }
 
-    // add target data component
-    let target_data = JSON.parse(`
-  { 
-   "name": "Target",
-   "code": "${code_identifier}tar",
-   "type": "radio",
-   "choices": {
-    "L4": "L4",
-    "pro": "Processor<br>",
-    "L3": "L3",
-    "net": "Net<br>",
-    "L2": "L2<br>",
-    "L1": "L1<br>"
-   },
-   "defaultValue": "L1"
-  }`)
-    idx = addRadio(table, idx, target_data.name, target_data)  // Target
+    idx = addRadio(table, idx, volley_data.name, volley_data)  // volley
+
+    let percentage_data;
+    if (code_identifier === bicycle_component_identifier + 'a') {
+        percentage_data = JSON.parse(`
+        {
+            "name": "Percent Made",
+            "code": "${code_identifier}per",
+            "type": "radio",
+            "choices": {
+                "25": "25%&ensp;",
+                "50": "50%&ensp;",
+                "75": "75%&ensp;",
+                "100": "100%&ensp;"
+            },
+            "defaultValue": "75"
+        }`)
+    } else {
+        percentage_data = JSON.parse(`
+        {
+            "name": "Percent Made",
+            "code": "${code_identifier}per",
+            "type": "radio",
+            "choices": {
+                "25": "25%&ensp;",
+                "50": "50%&ensp;",
+                "75": "75%&ensp;",
+                "100": "100%&ensp;"
+            },
+            "defaultValue": "100"
+        }`)
+    }
+
+    idx = addRadio(table, idx, percentage_data.name, percentage_data) //Percentage
+
+    //test
+    let total_fuel_break_data = JSON.parse(`
+    {
+        "name": "",
+        "code": "${code_identifier}tf",
+        "type": "break"
+    }`)
+    idx = addBreak(table, idx, total_fuel_break_data.name, total_fuel_break_data)
 
     // next successful cycle button
     let next_successful_button_data = JSON.parse(`
   { 
-    "name": "Make:",
+    "name": "Record:",
     "code": "${code_identifier}nsc",
     "type": "nextCycleButton"
-  }`)
+  }`) //"name": "Make:",
     idx = addNextSuccessfulCycleButton(table, idx, next_successful_button_data.name, next_successful_button_data, code_identifier)
-
-    // next failed cycle button
-    let next_failed_button_data = JSON.parse(`
-  { 
-    "name": "Miss:",
-    "code": "${code_identifier}nfc",
-    "type": "nextCycleButton"
-  }`)
-    idx = addNextFailedCycleButton(table, idx, next_failed_button_data.name, next_failed_button_data, code_identifier)
 
     return idx
 }
@@ -638,16 +548,6 @@ function addScoreLoc(table, idx, name, data) {
     }
     cell.appendChild(inp);
 
-    if (data.hasOwnProperty('cycleTimer')) {
-        if (data.cycleTimer !== "") {
-            inp = document.createElement('input');
-            inp.setAttribute("hidden", "");
-            inp.setAttribute("id", "cycleTimer_" + data.code);
-            inp.setAttribute("value", data.cycleTimer);
-            cell.appendChild(inp);
-        }
-    }
-
     idx += 1
     row = table.insertRow(idx);
     row.setAttribute("style", "display:none");
@@ -723,7 +623,6 @@ function onScoreLocClicked(event) {
         let changingInput = document.getElementById("input" + base);
         let clickRestriction = document.getElementById("clickRestriction" + base).value;
         let toggleClick = document.getElementById("toggleClick" + base).value;
-        let cycleTimer = document.getElementById("cycleTimer" + base);
         let boxArr = Array.from(JSON.parse(changingInput.value));
         let xyArr = Array.from(JSON.parse(changingXY.value));
 
@@ -760,10 +659,6 @@ function onScoreLocClicked(event) {
 
                 boxArr.push(box);
                 changingInput.value = JSON.stringify(boxArr);
-            }
-            // If associated with cycleTimer - send New Cycle EVENT
-            if (cycleTimer !== null) {
-                document.getElementById("cycle_" + cycleTimer.value).click();
             }
         }
         //anthony alert("x: " + centerX + " y: " + centerY);            
@@ -932,15 +827,7 @@ function addClickableImage(table, idx, name, data) {
         }
     }
     cell.appendChild(inp);
-    if (data.hasOwnProperty('cycleTimer')) {
-        if (data.cycleTimer !== "") {
-            inp = document.createElement('input');
-            inp.setAttribute("hidden", "");
-            inp.setAttribute("id", "cycleTimer_" + data.code);
-            inp.setAttribute("value", data.cycleTimer);
-            cell.appendChild(inp);
-        }
-    }
+
     idx += 1
     row = table.insertRow(idx);
     row.setAttribute("style", "display:none");
@@ -1010,7 +897,16 @@ function addBreak(table, idx, name, data) {
     cell1.classList.add("title");
     cell1.setAttribute("colspan", 2);
     cell1.setAttribute('id', 'break_' + data.code)
-    cell1.setAttribute('nof_cycles', '0')
+    //test
+    if (data.code.endsWith("break")) {
+        cell1.setAttribute('nof_cycles', '0')
+    } else if (data.code.endsWith("tf")) {
+        if (data.code.endsWith("atf")) {
+            cell1.setAttribute('total_fuel', '8')
+        } else {
+            cell1.setAttribute('total_fuel', '30')
+        }
+    }
     cell1.style.textAlign = 'center'
     cell1.style.fontWeight = 'bold'
     cell1.style.fontSize = 'large'
@@ -1021,7 +917,12 @@ function addBreak(table, idx, name, data) {
         cell1.innerHTML = `Error: No code specified for ${name}`;
         return idx + 1;
     }
-    cell1.innerHTML = `${name} (${cell1.getAttribute("nof_cycles")}):` + '&nbsp;';
+    //test
+    if (data.code.endsWith("break")) {
+        cell1.innerHTML = `${name} (${cell1.getAttribute("nof_cycles")})` + '&nbsp;';
+    } else if (data.code.endsWith("tf")) {
+        cell1.innerHTML = `${cell1.getAttribute("total_fuel")}` + ' Fuel&nbsp;';
+    }
     return idx + 1
 }
 
@@ -1098,6 +999,14 @@ function addRadio(table, idx, name, data) {
     ) {
         cell2.setAttribute("onchange", "updateMatchStart(event)");
     }
+
+    //test
+    if (data.code.endsWith("avol") || data.code.endsWith("aper")) {
+        cell2.setAttribute("onchange", "updateATotalFuel()");
+    } else if (data.code.endsWith("tvol") || data.code.endsWith("tper")) {
+        cell2.setAttribute("onchange", "updateTTotalFuel()");
+    }
+
     let checked = null
     if (data.hasOwnProperty('defaultValue')) {
         checked = data.defaultValue;
@@ -1271,7 +1180,6 @@ function counter(element, step) {
     let base = getIdBase(target.id);
 
     let ctr = element.getElementsByClassName("counter")[0];
-    let cycleTimer = document.getElementById("cycleTimer" + base);
     let result = parseInt(ctr.value) + step;
 
     if (isNaN(result)) {
@@ -1282,11 +1190,6 @@ function counter(element, step) {
         ctr.value = result;
     } else {
         ctr.value = 0;
-    }
-
-    // If associated with cycleTimer - send New Cycle EVENT
-    if (step >= 0 && cycleTimer !== null) {
-        document.getElementById("cycle_" + cycleTimer.value).click();
     }
 }
 
@@ -1537,9 +1440,9 @@ function configure() {
         idx = addElement(pmt, idx, element);
     });
 
-    // Configure auton screen
-    let ac = mydata.auton;
-    let at = document.getElementById("auton_table");
+    // Configure auto screen
+    let ac = mydata.auto;
+    let at = document.getElementById("auto_table");
     idx = 0;
     ac.forEach(element => {
         idx = addElement(at, idx, element);
@@ -1663,6 +1566,40 @@ function updateMatchStart(event) {
     }
 }
 
+//test
+//Updates Total Fuel Calculation
+function updateATotalFuel() {
+    let code_identifier = "cyclea"
+    let Form = document.forms.scoutingForm;
+
+    let break_component = document.getElementById(`break_${code_identifier}tf`)
+
+    let vol = Form[`${code_identifier}vol`]
+    let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
+
+    let per = Form[`${code_identifier}per`]
+    let per_value = per.value
+
+    break_component.setAttribute("total_fuel", (Math.round(vol_value * per_value / 100)).toString())
+    break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;';
+}
+
+function updateTTotalFuel() {
+    let code_identifier = "cyclet"
+    let Form = document.forms.scoutingForm;
+
+    let break_component = document.getElementById(`break_${code_identifier}tf`)
+
+    let vol = Form[`${code_identifier}vol`]
+    let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
+
+    let per = Form[`${code_identifier}per`]
+    let per_value = per.value
+
+    break_component.setAttribute("total_fuel", (Math.round(vol_value * per_value / 100)).toString())
+    break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;';
+}
+
 // On team change event (for "You are scouting..."
 function onTeamnameChange(event) {
     let newNumber = document.getElementById("input_t").value;
@@ -1743,15 +1680,14 @@ function getData(dataFormat) {
     let gametimes = []
     let sources = []
     let zone_ids = []
-    let targets = []
-    let statuses = []
-    let times = []
+    let volleys = []
+    let percentages = []
     for (let i = 0; i < cycles.length; i++) {
         let cycle = cycles[i]
         gametimes.push(cycle.gametime)
         sources.push(cycle.source)
         let zone_id = 'x';
-        if (cycle.target !== 'p' && cycle.target !== 'n') {
+        if (cycle.volley !== 'p' && cycle.volley !== 'n') {
             if (cycle.score_loc == '00' || cycle.score_loc == '60') {
                 zone_id = 'a';
             } else if (cycle.score_loc == '10' || cycle.score_loc == '70') {
@@ -1767,17 +1703,12 @@ function getData(dataFormat) {
             }
         }
         zone_ids.push(zone_id)
-        targets.push(cycle.target)
-        statuses.push(cycle.status)
-        if (cycle.gametime == 2 && recordTeleopCycleTime) {
-            times.push(cycle.time);
-        } else {
-            times.push(0);
-        }
+        volleys.push(cycle.volley)
+        percentages.push(cycle.percentage)
     }
-    // normal_data;gametimes;sources;zone_ids;targets;statuses;times
+    // normal_data;gametimes;sources;zone_ids;volleys;percentages
     //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${targets.join(',')}|${statuses.join(',')}|${times.join(',')}`
+    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${volleys.join(',')}|${percentages.join(',')}`
 }
 
 // Returns a boolean: whether data in form is valid or not
@@ -1910,25 +1841,18 @@ function clearForm() {
         }
         cycles = []
 
-        let auton_specifier = bicycle_component_identifier + 'a'
+        let auto_specifier = bicycle_component_identifier + 'a'
         let teleop_specifier = bicycle_component_identifier + 't'
 
         let break_component;
-        break_component = document.getElementById(`break_${auton_specifier}break`)
+        break_component = document.getElementById(`break_${auto_specifier}break`)
         break_component.setAttribute("nof_cycles", "0")
-        break_component.innerHTML = `Auton Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
-        if (break_component.hasAttribute("prev_cycle_end_time")) {
-            break_component.removeAttribute("prev_cycle_end_time")
-        }
-
+        break_component.innerHTML = `Auto Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
         break_component = document.getElementById(`break_${teleop_specifier}break`)
         break_component.setAttribute("nof_cycles", "0")
-        if (break_component.hasAttribute("prev_cycle_end_time")) {
-            break_component.removeAttribute("prev_cycle_end_time")
-        }
         break_component.innerHTML = `Teleop Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 
-        clearCycle(auton_specifier)
+        clearCycle(auto_specifier)
         clearCycle(teleop_specifier)
         drawFields()
     } catch (e) {
@@ -1977,7 +1901,7 @@ function drawFields(name) {
                 let centerY = coord[1];
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
-                if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
+                if (drawType === 'circle') {  // Should only be for auto start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
                     let x_level = (centerX < 150 && centerX >= 105) ? 105 : ((centerX > 150 && centerX <= 195) ? 150 : -1);
                     let y_level;
                     if (x_level === -1 || (x_level == 105 && getRobot().charAt(0) === "r") || (x_level == 150 && getRobot().charAt(0) === "b")) { continue; }
@@ -1985,11 +1909,11 @@ function drawFields(name) {
                         y_level = 0
                     } else if (centerY < 60) {
                         y_level = 30
-                    } else if (centerY < 90){
+                    } else if (centerY < 90) {
                         y_level = 60
                     } else if (centerY < 120) {
                         y_level = 90
-                    } else if (centerY < 150){
+                    } else if (centerY < 150) {
                         y_level = 120
                     }
                     rectangle(ctx, x_level, y_level, 45, 30, true);
@@ -2137,7 +2061,6 @@ function onFieldClick(event) {
     let changingInput = document.getElementById("input" + base);
     let clickRestriction = document.getElementById("clickRestriction" + base).value;
     let toggleClick = document.getElementById("toggleClick" + base).value;
-    let cycleTimer = document.getElementById("cycleTimer" + base);
     let boxArr = Array.from(JSON.parse(changingInput.value));
     let xyArr = Array.from(JSON.parse(changingXY.value));
 
@@ -2174,10 +2097,6 @@ function onFieldClick(event) {
 
             boxArr.push(box);
             changingInput.value = JSON.stringify(boxArr);
-        }
-        // If associated with cycleTimer - send New Cycle EVENT
-        if (cycleTimer !== null) {
-            document.getElementById("cycle_" + cycleTimer.value).click();
         }
     }
     let centerX = event.offsetX
