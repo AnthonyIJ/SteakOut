@@ -73,14 +73,14 @@ const config_data = `
             "shape": "circle 4 white orangered true"
         }
     ],
-    "auton": [
+    "auto": [
         {
             "name": "Left Starting Zone",
             "code": "las",
             "type": "bool"
         },
         {
-            "name": "Auton Notes",
+            "name": "auto Notes",
             "code": "an",
             "type": "text",
             "size": 15,
@@ -91,7 +91,7 @@ const config_data = `
             "name": "Bicycle",
             "code": "teleopbicycle",
             "type": "bicycle",
-            "bicycle_id": "auton"
+            "bicycle_id": "auto"
         },
         {
             "name": "End with:",
@@ -149,7 +149,7 @@ const config_data = `
             "type": "bool"
         },
         {
-            "name": "O.G. Auton",
+            "name": "O.G. auto",
             "code": "oga",
             "type": "bool"
         },

@@ -1,15 +1,15 @@
 const config_data = `
 {
     "dataFormat": "kvs",
-    "title": "BBQScoutingPASS 2026",
-    "page_title": "FRC 2026: REBUILT",
+    "title": "SteakOut 2026",
+    "page_title": "SteakOut 2026: REBUILT",
     "checkboxAs": "10",
     "prematch": [
         {
             "name": "Scouter Name",
             "code": "s",
             "type": "scouter",
-            "size": 9,
+            "size": 10,
             "maxSize": 7,
             "defaultValue": "",
             "required": "true"
@@ -19,7 +19,7 @@ const config_data = `
             "code": "e",
             "type": "event",
             "defaultValue": "2026txbel",
-            "size": 9,
+            "size": 10,
             "required": "true"
         },
         {

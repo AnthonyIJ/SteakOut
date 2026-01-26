@@ -1852,6 +1852,13 @@ function clearForm() {
         break_component.setAttribute("nof_cycles", "0")
         break_component.innerHTML = `Teleop Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 
+        break_component = document.getElementById(`break_${auto_specifier}tf`)
+        break_component.setAttribute("total_fuel", "8")
+        break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;'
+        break_component = document.getElementById(`break_${teleop_specifier}tf`)
+        break_component.setAttribute("total_fuel", "30")
+        break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;'
+
         clearCycle(auto_specifier)
         clearCycle(teleop_specifier)
         drawFields()
@@ -2170,6 +2177,13 @@ function flip(event) {
     }
 
     let img = document.getElementById('canvas_cycleascoreloc')
+    if (img.style.transform === "") {
+        img.style.transform = 'rotate(180deg)';
+    } else {
+        img.style.transform = '';
+    }
+
+    img = document.getElementById('canvas_cycletscoreloc')
     if (img.style.transform === "") {
         img.style.transform = 'rotate(180deg)';
     } else {

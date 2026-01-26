@@ -73,7 +73,7 @@ const config_data = `
             "shape": "circle 4 white orangered true"
         }
     ],
-    "auton": [
+    "auto": [
         {
             "name": "Left Starting Zone",
             "code": "las",
@@ -91,7 +91,7 @@ const config_data = `
             "name": "Bicycle",
             "code": "teleopbicycle",
             "type": "bicycle",
-            "bicycle_id": "auton"
+            "bicycle_id": "auto"
         }
     ],
     "teleop": [

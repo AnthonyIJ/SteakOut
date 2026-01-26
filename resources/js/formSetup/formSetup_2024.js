@@ -32,8 +32,8 @@ class Cycle {
   ])
 
   constructor(gametime, source, shot_from, target, status, time) {
-    this.gametime = gametime  // 1=auton, 2=teleop
-    this.source = source;      // 0=hp_ground, 1=hp_other, 2=o.g.auton i.e. auton_leftover, 3=ground
+    this.gametime = gametime  // 1=auto, 2=teleop
+    this.source = source;      // 0=hp_ground, 1=hp_other, 2=o.g.auto i.e. auto_leftover, 3=ground
     this.shot_from = shot_from;   // zone_id {xy} format
     this.target = target;      // 0=partner, 1=amp, 2=speaker, 3=amplified_speaker
     this.status = status;      // 0=unsuccessful, 1=successful
@@ -41,7 +41,7 @@ class Cycle {
   }
   condense() {
     // gsxytftime
-    // g = gametime (auton / teleop)
+    // g = gametime (auto / teleop)
     // s = source
     // x, y = grid_x, grid_y
     // t = target
@@ -59,7 +59,7 @@ class Cycle {
 function nextSuccessfulCycle(code_identifier) {
   let cycleText;
   if (code_identifier.endsWith('a')) {
-    cycleText = 'Auton'
+    cycleText = 'auto'
   } else {
     cycleText = 'Teleop'
   }
@@ -84,7 +84,7 @@ function nextSuccessfulCycle(code_identifier) {
 function nextFailedCycle(code_identifier) {
   let cycleText;
   if (code_identifier.endsWith('a')) {
-    cycleText = 'Auton'
+    cycleText = 'auto'
   } else {
     cycleText = 'Teleop'
   }
@@ -353,11 +353,11 @@ bicycle_component_identifier = 'cycle'
 
 // Add bicycle
 function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
-  // Is this bicycle the auton or teleop bicycle?
-  let code_identifier = bicycle_component_identifier + ((data.bicycle_id === 'auton') ? 'a' : 't');
+  // Is this bicycle the auto or teleop bicycle?
+  let code_identifier = bicycle_component_identifier + ((data.bicycle_id === 'auto') ? 'a' : 't');
 
   // Create the title display (called "break") component for this bicycle component
-  let break_name = (data.bicycle_id === 'auton') ? 'Auton' : 'Teleop';
+  let break_name = (data.bicycle_id === 'auto') ? 'auto' : 'Teleop';
   let break_data = JSON.parse(`{
             "name": "${break_name} Cycle Form:",
             "code": "${code_identifier}break",
@@ -375,7 +375,7 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
   idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
 
   let source_data;
-  if (code_identifier === bicycle_component_identifier + 'a') { // Auton
+  if (code_identifier === bicycle_component_identifier + 'a') { // auto
     source_data = JSON.parse(`{ 
      "name": "Source",
      "code": "${code_identifier}src",
@@ -401,7 +401,7 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
      "choices": {
       "hpg": "HP Ground<br>",
       "hpo": "HP (other)<br>",
-      "oga": "O.G. Auton<br>",
+      "oga": "O.G. auto<br>",
       "g": "Ground<br>",
       "ap": "Alliance Partner"
      },
@@ -1520,9 +1520,9 @@ function configure() {
     idx = addElement(pmt, idx, element);
   });
 
-  // Configure auton screen
-  let ac = mydata.auton;
-  let at = document.getElementById("auton_table");
+  // Configure auto screen
+  let ac = mydata.auto;
+  let at = document.getElementById("auto_table");
   idx = 0;
   ac.forEach(element => {
     idx = addElement(at, idx, element);
@@ -1882,13 +1882,13 @@ function clearForm() {
     }
     cycles = []
 
-    let auton_specifier = bicycle_component_identifier + 'a'
+    let auto_specifier = bicycle_component_identifier + 'a'
     let teleop_specifier = bicycle_component_identifier + 't'
 
     let break_component;
-    break_component = document.getElementById(`break_${auton_specifier}break`)
+    break_component = document.getElementById(`break_${auto_specifier}break`)
     break_component.setAttribute("nof_cycles", "0")
-    break_component.innerHTML = `Auton Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
+    break_component.innerHTML = `auto Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
     if (break_component.hasAttribute("prev_cycle_end_time")) {
       break_component.removeAttribute("prev_cycle_end_time")
     }
@@ -1900,7 +1900,7 @@ function clearForm() {
     }
     break_component.innerHTML = `Teleop Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 
-    clearCycle(auton_specifier)
+    clearCycle(auto_specifier)
     clearCycle(teleop_specifier)
     drawFields()
   } catch (e) {
@@ -1933,7 +1933,7 @@ function drawFields(name) {
         let radius = 5;
         ctx.beginPath();
         let drawType = shapeArr[0].toLowerCase()
-        if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
+        if (drawType === 'circle') {  // Should only be for auto start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
           let x_level = centerX < 35 ? 0 : (centerX > 265 ? 265 : -1);
           let width = 33;
           let y_level;
