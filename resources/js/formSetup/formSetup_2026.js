@@ -269,7 +269,7 @@ function addBicycle(table, idx, name, data) {
         "p": "Preload&emsp;",
         "d": "Depot<br>",
         "o": "Outpost&emsp;",
-        "n": "Neutral Zone"
+        "n": "NZ"
      },
      "defaultValue": "p"
      }`)
@@ -307,10 +307,10 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}vol",
             "type": "radio",
             "choices": {
-            "10": "10&ensp;",
-            "20": "20&ensp;",
-            "30": "30&ensp;",
-            "40": "40&ensp;",
+            "10": "10<br>",
+            "20": "20<br>",
+            "30": "30<br>",
+            "40": "40<br>",
             "50": "50"
             },
             "defaultValue": "10"
@@ -322,10 +322,10 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}vol",
             "type": "radio",
             "choices": {
-            "10": "10&ensp;",
-            "20": "20&ensp;",
-            "30": "30&ensp;",
-            "40": "40&ensp;",
+            "10": "10<br>",
+            "20": "20<br>",
+            "30": "30<br>",
+            "40": "40<br>",
             "50": "50"
             },
             "defaultValue": "30"
@@ -342,10 +342,10 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}per",
             "type": "radio",
             "choices": {
-                "25": "25%&ensp;",
-                "50": "50%&ensp;",
-                "75": "75%&ensp;",
-                "100": "100%&ensp;"
+                "25": "25%<br>",
+                "50": "50%<br>",
+                "75": "75%<br>",
+                "100": "100%"
             },
             "defaultValue": "75"
         }`)
@@ -356,10 +356,10 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}per",
             "type": "radio",
             "choices": {
-                "25": "25%&ensp;",
-                "50": "50%&ensp;",
-                "75": "75%&ensp;",
-                "100": "100%&ensp;"
+                "25": "25%<br>",
+                "50": "50%<br>",
+                "75": "75%<br>",
+                "100": "100%"
             },
             "defaultValue": "100"
         }`)

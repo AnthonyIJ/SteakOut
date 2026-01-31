@@ -99,7 +99,7 @@ const config_data = `
                 "cl": "Cleaner&ensp;",
                 "cy": "Cycler<br>",
                 "pa": "Passer&emsp;",
-                "de": "Defense/Stealing"
+                "de": "Defense"
             },
             "defaultValue": "cy"
         },
