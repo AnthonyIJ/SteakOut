@@ -13,6 +13,8 @@ class Cycle {
         ["d", "d"],
         ["o", "o"],
         ["n", "nz"],
+        ["f", "f"],
+        ["c", "c"],
         ['x', "x"] //no source
     ])
     static volley_condense_map = new Map([
@@ -61,7 +63,7 @@ function nextSuccessfulCycle(code_identifier) {
         return
     }
     try {
-        //clearCycle(code_identifier)
+        clearCycle(code_identifier)
     } catch (e) {
         alert(e)
     }
@@ -74,25 +76,11 @@ function nextSuccessfulCycle(code_identifier) {
 function saveCycle(code_identifier, successful) {
     let Form = document.forms.scoutingForm;
 
-    let src;
-    let src_value;
-    if (code_identifier.endsWith('a')) {
-        src = Form[`${code_identifier}src`]
-        src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-    } else {
-        src = "x"
-        src_value = "x"
-    }
+    let src = Form[`${code_identifier}src`]
+    let src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
-    let scoreloc;
-    let scoreloc_value;
-    if (code_identifier.endsWith('a')) {
-        scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-        scoreloc_value = scoreloc.getAttribute('grid_coords')
-    } else {
-        scoreloc = "x";
-        scoreloc_value = "x";
-    }
+    let scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
+    let scoreloc_value = scoreloc.getAttribute('boxes')
 
     let vol = Form[`${code_identifier}vol`]
     let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
@@ -137,18 +125,11 @@ function clearCycle(code_identifier) {
         e.value = "[]"
     }
 
-    if (code_identifier.endsWith('a')) {
-        let scoreloc_component = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-        console.log(scoreloc_component)
-        scoreloc_component.setAttribute('grid_coords', null)
-    }
-    // inputs = new Set(document.querySelectorAll("[tag='canvas']"));
-    // for (let e of inputs) {
-    //   if (e.getAttribute('grid_coords') !== undefined && e.getAttribute('grid_coords') !== null) {
-    //     e.grid_coords = null
-    //     alert('poo')
-    //   }
-    // }
+    let scoreloc_component = document.getElementById('canvas_' + code_identifier + 'scoreloc')
+    console.log(scoreloc_component)
+    scoreloc_component.setAttribute('boxes', null)
+
+
 
     inputs = new Set(document.querySelectorAll("[id*='input_']"));
     for (let e of inputs) {
@@ -160,58 +141,58 @@ function clearCycle(code_identifier) {
             e.value = "[]";
             continue;
         }
-        let radio = code.indexOf("_")
-        if (radio > -1) {
-            let baseCode = code.substr(0, radio)
-            if (e.checked) {
-                e.checked = false
-                document.getElementById("display_" + baseCode).value = ""
-            }
-            let defaultValue;
-            try {
-                defaultValue = document.getElementById("default_" + baseCode).value
-            } catch (p) {
-                defaultValue = ''
-            }
-            if (defaultValue !== "") {
-                if (defaultValue === e.value) {
-                    e.checked = true
-                    document.getElementById("display_" + baseCode).value = defaultValue
-                }
-            }
-        } else {
-            if (e.type === "number" || e.type === "text" || e.type === "hidden") {
-                if ((e.className === "counter") ||
-                    (e.className === "timer") ||
-                    (e.className === "cycle")) {
-                    e.value = 0
-                    if (e.className === "timer" || e.className === "cycle") {
-                        // Stop interval
-                        let timerStatus = document.getElementById("status_" + code);
-                        let startButton = document.getElementById("start_" + code);
-                        let intervalIdField = document.getElementById("intervalId_" + code);
-                        let intervalId = intervalIdField.value;
-                        timerStatus.value = 'stopped';
-                        startButton.innerHTML = "Start";
-                        if (intervalId !== '') {
-                            clearInterval(intervalId);
-                        }
-                        intervalIdField.value = '';
-                        if (e.className === "cycle") {
-                            document.getElementById("display_" + code).value = ""
-                        }
-                    }
-                } else {
-                    e.value = ""
-                }
-            } else if (e.type === "checkbox") {
-                if (e.checked === true) {
-                    e.checked = false
-                }
-            } else {
-                console.log("unsupported input type")
-            }
-        }
+        // let radio = code.indexOf("_")
+        // if (radio > -1) {
+        //     let baseCode = code.substr(0, radio)
+        //     if (e.checked) {
+        //         e.checked = false
+        //         document.getElementById("display_" + baseCode).value = ""
+        //     }
+        //     let defaultValue;
+        //     try {
+        //         defaultValue = document.getElementById("default_" + baseCode).value
+        //     } catch (p) {
+        //         defaultValue = ''
+        //     }
+        //     if (defaultValue !== "") {
+        //         if (defaultValue === e.value) {
+        //             e.checked = true
+        //             document.getElementById("display_" + baseCode).value = defaultValue
+        //         }
+        //     }
+        // } else {
+        //     if (e.type === "number" || e.type === "text" || e.type === "hidden") {
+        //         if ((e.className === "counter") ||
+        //             (e.className === "timer") ||
+        //             (e.className === "cycle")) {
+        //             e.value = 0
+        //             if (e.className === "timer" || e.className === "cycle") {
+        //                 // Stop interval
+        //                 let timerStatus = document.getElementById("status_" + code);
+        //                 let startButton = document.getElementById("start_" + code);
+        //                 let intervalIdField = document.getElementById("intervalId_" + code);
+        //                 let intervalId = intervalIdField.value;
+        //                 timerStatus.value = 'stopped';
+        //                 startButton.innerHTML = "Start";
+        //                 if (intervalId !== '') {
+        //                     clearInterval(intervalId);
+        //                 }
+        //                 intervalIdField.value = '';
+        //                 if (e.className === "cycle") {
+        //                     document.getElementById("display_" + code).value = ""
+        //                 }
+        //             }
+        //         } else {
+        //             e.value = ""
+        //         }
+        //     } else if (e.type === "checkbox") {
+        //         if (e.checked === true) {
+        //             e.checked = false
+        //         }
+        //     } else {
+        //         console.log("unsupported input type")
+        //     }
+        // }
     }
     drawFields()
 }
@@ -293,7 +274,7 @@ function addBicycle(table, idx, name, data) {
       "code": "${code_identifier}scoreloc",
       "type": "scoreloc",
       "filename": "2026/field_image.png",
-      "clickRestriction": "one",
+      "clickRestriction": "four",
       "shape": "rect 4 white orangered true"
   }`)
     idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
@@ -367,7 +348,6 @@ function addBicycle(table, idx, name, data) {
 
     idx = addRadio(table, idx, percentage_data.name, percentage_data) //Percentage
 
-    //test
     let total_fuel_break_data = JSON.parse(`
     {
         "name": "",
@@ -411,12 +391,12 @@ function addScoreLoc(table, idx, name, data) {
     //     }
     // }
 
-    let showUndo = false;
-    // if (data.hasOwnProperty('showUndo')) {
-    //     if (data.showUndo.toLowerCase() === 'false') {
-    //         showUndo = false;
-    //     }
-    // }
+    let showUndo = true;
+    if (data.hasOwnProperty('showUndo')) {
+        if (data.showUndo.toLowerCase() === 'false') {
+            showUndo = false;
+        }
+    }
 
     if (showFlip || showUndo) {
         idx += 1
@@ -425,16 +405,16 @@ function addScoreLoc(table, idx, name, data) {
         cell.setAttribute("colspan", 2);
         cell.setAttribute("style", "text-align: center;");
 
-        // if (showUndo) {
-        //     // Undo button
-        //     let undoButton = document.createElement("input");
-        //     undoButton.setAttribute("type", "button");
-        //     undoButton.setAttribute("onclick", "undo(this.parentElement)");
-        //     undoButton.setAttribute("value", "Undo");
-        //     undoButton.setAttribute("id", "undo_" + data.code);
-        //     undoButton.setAttribute("class", "undoButton");
-        //     cell.appendChild(undoButton);
-        // }
+        if (showUndo) {
+            // Undo button
+            let undoButton = document.createElement("input");
+            undoButton.setAttribute("type", "button");
+            undoButton.setAttribute("onclick", "undo(this.parentElement)");
+            undoButton.setAttribute("value", "Undo");
+            undoButton.setAttribute("id", "undo_" + data.code);
+            undoButton.setAttribute("class", "undoButton");
+            cell.appendChild(undoButton);
+        }
 
         if (showFlip) {
             // Flip button
@@ -570,14 +550,9 @@ function onScoreLocClicked(event) {
         let target = event.target;
         let base = getIdBase(target.id);
         //Resolution height and width (e.g. 52x26)
-        let resX = 12;
-        let resY = 6;
-        let dimensions = document.getElementById("dimensions" + base);
-        if (dimensions.value !== "") {
-            let arr = dimensions.value.split(' ');
-            resX = arr[0];
-            resY = arr[1];
-        }
+        let resX = 20;
+        let resY = 10;
+
         //Turns coordinates into a numeric box
         let box = ((Math.ceil(event.offsetY / target.height * resY) - 1) * resX) + Math.ceil(event.offsetX / target.width * resX);
         let coords = event.offsetX + "," + event.offsetY;
@@ -588,35 +563,6 @@ function onScoreLocClicked(event) {
                 return;
             }
         }
-
-        let centerX = event.offsetX;
-        let centerY = event.offsetY;
-        let y_level = 0;
-        let x_level = 0;
-
-        for (x_level = 0; x_level < 12; x_level++) {
-            if (withinTriangle(centerX, centerY, x_level)) {
-                break;
-            }
-        }
-
-        if (x_level == 12) {
-            // if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
-            //     x_level = 12;
-            // } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
-            //     x_level = 13;
-            // } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
-            //     x_level = 14;
-            // } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
-            //     x_level = 15;
-            // } else {
-            //     return;
-            // }
-            return;
-        }
-
-        let scoreloc_component = document.getElementById('canvas' + base)
-        scoreloc_component.setAttribute('grid_coords', `${x_level}${y_level}`)
 
         //Cumulating values
         let changingXY = document.getElementById("XY" + base);
@@ -661,7 +607,11 @@ function onScoreLocClicked(event) {
                 changingInput.value = JSON.stringify(boxArr);
             }
         }
-        //anthony alert("x: " + centerX + " y: " + centerY);            
+
+        let scoreloc_component = document.getElementById('canvas' + base)
+        scoreloc_component.setAttribute('boxes', `${changingInput.value}`)
+
+        //anthony alert("x: " + centerX + " y: " + centerY);
         drawFields()
     } catch (e) {
         alert(e)
@@ -897,7 +847,7 @@ function addBreak(table, idx, name, data) {
     cell1.classList.add("title");
     cell1.setAttribute("colspan", 2);
     cell1.setAttribute('id', 'break_' + data.code)
-    //test
+
     if (data.code.endsWith("break")) {
         cell1.setAttribute('nof_cycles', '0')
     } else if (data.code.endsWith("tf")) {
@@ -917,7 +867,7 @@ function addBreak(table, idx, name, data) {
         cell1.innerHTML = `Error: No code specified for ${name}`;
         return idx + 1;
     }
-    //test
+
     if (data.code.endsWith("break")) {
         cell1.innerHTML = `${name} (${cell1.getAttribute("nof_cycles")})` + '&nbsp;';
     } else if (data.code.endsWith("tf")) {
@@ -1000,7 +950,6 @@ function addRadio(table, idx, name, data) {
         cell2.setAttribute("onchange", "updateMatchStart(event)");
     }
 
-    //test
     if (data.code.endsWith("avol") || data.code.endsWith("aper")) {
         cell2.setAttribute("onchange", "updateATotalFuel()");
     } else if (data.code.endsWith("tvol") || data.code.endsWith("tper")) {
@@ -1566,7 +1515,6 @@ function updateMatchStart(event) {
     }
 }
 
-//test
 //Updates Total Fuel Calculation
 function updateATotalFuel() {
     let code_identifier = "cyclea"
@@ -1666,7 +1614,7 @@ function getData(dataFormat) {
             4   0
              */
             thisFieldValue = /*(parseInt(field_value.substring(0, 1)) * 5)*/ + parseInt(field_value.substring(1, 2));
-            if (getRobot().charAt(0) === 'r') {
+            if (getRobot().charAt(0) === 'b') {
                 thisFieldValue = -thisFieldValue + 4;
             }
         } else {
@@ -1679,36 +1627,20 @@ function getData(dataFormat) {
     });
     let gametimes = []
     let sources = []
-    let zone_ids = []
+    let score_locs = []
     let volleys = []
     let percentages = []
     for (let i = 0; i < cycles.length; i++) {
         let cycle = cycles[i]
         gametimes.push(cycle.gametime)
         sources.push(cycle.source)
-        let zone_id = 'x';
-        if (cycle.volley !== 'p' && cycle.volley !== 'n') {
-            if (cycle.score_loc == '00' || cycle.score_loc == '60') {
-                zone_id = 'a';
-            } else if (cycle.score_loc == '10' || cycle.score_loc == '70') {
-                zone_id = 'b';
-            } else if (cycle.score_loc == '20' || cycle.score_loc == '80') {
-                zone_id = 'c';
-            } else if (cycle.score_loc == '30' || cycle.score_loc == '90') {
-                zone_id = 'd';
-            } else if (cycle.score_loc == '40' || cycle.score_loc == '100') {
-                zone_id = 'e';
-            } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
-                zone_id = 'f';
-            }
-        }
-        zone_ids.push(zone_id)
+        score_locs.push(cycle.score_loc)
         volleys.push(cycle.volley)
         percentages.push(cycle.percentage)
     }
     // normal_data;gametimes;sources;zone_ids;volleys;percentages
     //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${volleys.join(',')}|${percentages.join(',')}`
+    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${score_locs.join(',')}|${volleys.join(',')}|${percentages.join(',')}`
 }
 
 // Returns a boolean: whether data in form is valid or not
@@ -1870,6 +1802,11 @@ function clearForm() {
 
 // === Field Handling ===
 
+//auto start rectangles
+let autoBoxWidth = 30;
+let ys = [8, 30, 66, 84, 120];
+let heights = [22, 36, 18, 36, 22];
+
 // Draw fields on
 function drawFields(name) {
     let fields = document.querySelectorAll("[id*='canvas_']");
@@ -1883,17 +1820,10 @@ function drawFields(name) {
 
         ctx.drawImage(img, 0, 0, f.width, f.height);
 
-        ctx.beginPath();
-        ctx.strokeStyle = '#FFFFFF';
-
-        if (shapeArr[0].toLowerCase() === 'rect') {
-            for (let i = 0; i < 12; i++) {
-                triangle(ctx, i, false);
-            }
-        } else {
-            for (let x = 105; x < 151; x += 45) {
-                for (let y = 0; y < 121; y += 30) {
-                    rectangle(ctx, x, y, 45, 30, false);
+        if (shapeArr[0].toLowerCase() === 'circle') {
+            for (let x = 78 - autoBoxWidth; x < 226; x += autoBoxWidth + 147) {
+                for (let y = 0; y < ys.length; y++) {
+                    rectangle(ctx, x, ys[y], autoBoxWidth, heights[y], false);
                 }
             }
         }
@@ -1902,6 +1832,10 @@ function drawFields(name) {
         let xyStr = document.getElementById("XY_" + code).value
         if (JSON.stringify(xyStr).length > 2) {
             let pts = Array.from(JSON.parse(xyStr))
+
+            let prevX = null;
+            let prevY = null;
+
             for (let p of pts) {
                 let coord = p.split(",")
                 let centerX = coord[0];
@@ -1909,81 +1843,38 @@ function drawFields(name) {
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auto start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = (centerX < 150 && centerX >= 105) ? 105 : ((centerX > 150 && centerX <= 195) ? 150 : -1);
+                    let x_level = (centerX < 78 && centerX > 78 - autoBoxWidth) ? 78 - autoBoxWidth : ((centerX > 225 && centerX < 225 + autoBoxWidth) ? 225 : -1);
                     let y_level;
-                    if (x_level === -1 || (x_level == 105 && getRobot().charAt(0) === "r") || (x_level == 150 && getRobot().charAt(0) === "b")) { continue; }
-                    if (centerY < 30) {
-                        y_level = 0
-                    } else if (centerY < 60) {
-                        y_level = 30
-                    } else if (centerY < 90) {
-                        y_level = 60
-                    } else if (centerY < 120) {
-                        y_level = 90
-                    } else if (centerY < 150) {
-                        y_level = 120
-                    }
-                    rectangle(ctx, x_level, y_level, 45, 30, true);
-                } else if (drawType === 'rect') {
-                    try {
-                        for (let i = 0; i < 12; i++) {
-                            if (withinTriangle(centerX, centerY, i)) {
-                                triangle(ctx, i, true);
-                                return;
-                            }
+                    if (x_level === -1 || (x_level == 225 && getRobot().charAt(0) === "r") || (x_level == 78 - autoBoxWidth && getRobot().charAt(0) === "b")) { continue; }
+                    for (y_level = 0; y_level < ys.length - 1; y_level++) {
+                        if (centerY > ys[y_level] && centerY <= ys[y_level + 1]) {
+                            break;
                         }
-                    } catch (e) {
-                        alert(e)
                     }
+
+                    rectangle(ctx, x_level, ys[y_level], autoBoxWidth, heights[y_level], true);
                 } else {
-                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-                }
-                ctx.lineWidth = 1;
-                if (shapeArr[2] !== "") {
-                    ctx.strokeStyle = shapeArr[2];
-                } else {
-                    ctx.strokeStyle = '#FFFFFF';
-                }
-                if (shapeArr[4].toLowerCase() === 'true') {
-                    ctx.fillStyle = shapeArr[3];
-                }
-                if (drawType === 'rect' || drawType === 'circle') {
                     ctx.fillStyle = 'rgba(255, 165, 0, 0.2)'
-                }
-                ctx.stroke();
-                if (shapeArr[4].toLowerCase() === 'true') {
-                    ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF'
+
+                    ctx.beginPath()
+                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+                    ctx.fill()
+                    if (prevX != null && prevY != null) {
+                        ctx.moveTo(prevX, prevY)
+                        ctx.lineTo(centerX, centerY)
+                    }
+
+                    ctx.closePath()
+
+                    ctx.stroke()
+
+
+                    prevX = centerX;
+                    prevY = centerY;
                 }
             }
         }
-    }
-}
-
-
-function withinBounds(x, y, minX, minY, width, height) {
-    return (minX <= x && x <= minX + width) && (minY <= y && y <= minY + height);
-}
-
-let reefCenterX = [77, 223];
-let reefCenterY = [75, 75];
-//       / BLUE VALUES                               / RED VALUES                                    /
-let x1 = [39.75, 77, 114.25, 114.25, 77, 39.75, 260.25, 223, 185.75, 185.75, 223, 260.25];
-let y1 = [96.5, 118, 96.5, 53.5, 32, 53.5, 53.5, 32, 53.5, 96.5, 118, 96.5];
-let x2 = [39.75, 39.75, 77, 114.25, 114.25, 77, 260.25, 260.25, 223, 185.75, 185.75, 223];
-let y2 = [53.5, 96.5, 118, 96.5, 53.5, 32, 96.5, 53.5, 32, 53.5, 96.5, 118];
-
-function triangle(ctx, idx, fill) {
-    ctx.beginPath();
-    ctx.moveTo(reefCenterX[idx <= 5 ? 0 : 1], reefCenterY[idx <= 5 ? 0 : 1]);
-    ctx.lineTo(x1[idx], y1[idx]);
-    ctx.lineTo(x2[idx], y2[idx]);
-    ctx.closePath();
-
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.stroke();
-    if (fill) {
-        ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
-        ctx.fill();
     }
 }
 
@@ -1997,41 +1888,7 @@ function rectangle(ctx, x, y, width, height, fill) {
         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
         ctx.fill();
     }
-}
-
-function withinTriangle(x, y, idx) {
-    let signedArea = 0.5 * (reefCenterX[idx <= 5 ? 0 : 1] * (y1[idx] - y2[idx]) + x1[idx] * (y2[idx] - reefCenterY[idx <= 5 ? 0 : 1]) + x2[idx] * (reefCenterY[idx <= 5 ? 0 : 1] - y1[idx]));
-
-    let a = 0.5 * (x * (y1[idx] - y2[idx]) + x1[idx] * (y2[idx] - y) + x2[idx] * (y - y1[idx]));
-    if (signum(a) != signum(signedArea)) return false;
-
-    let b = 0.5 * (x * (y2[idx] - reefCenterY[idx <= 5 ? 0 : 1]) + x2[idx] * (reefCenterY[idx <= 5 ? 0 : 1] - y) + reefCenterX[idx <= 5 ? 0 : 1] * (y - y2[idx]));
-    if (signum(b) != signum(signedArea)) return false;
-
-    let c = 0.5 * (x * (reefCenterY[idx <= 5 ? 0 : 1] - y1[idx]) + reefCenterX[idx <= 5 ? 0 : 1] * (y1[idx] - y) + x1[idx] * (y - reefCenterY[idx <= 5 ? 0 : 1]));
-    if (signum(c) != signum(signedArea)) return false;
-
-    return signedArea == a + b + c;
-}
-
-function signum(x) {
-    if (x == 0) {
-        return x;
-    }
-    return x / Math.abs(x);
-}
-
-function drawRect(ctx, x, y, width, height, fill) {
-    ctx.beginPath();
-    ctx.rect(x, y, width, height);
     ctx.closePath();
-
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.stroke();
-    if (fill) {
-        ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
-        ctx.fill();
-    }
 }
 
 // On field click
@@ -2109,29 +1966,18 @@ function onFieldClick(event) {
     let centerX = event.offsetX
     let centerY = event.offsetY
     //anthony alert(centerX + " " + centerY);
-    let x_level;
+    let x_level = (centerX < 78 && centerX > 78 - autoBoxWidth && getRobot().charAt(0) === "r") ? 0 : ((centerX > 225 && centerX < 225 + autoBoxWidth && getRobot().charAt(0) === "b") ? 1 : -1)
     let field_component = document.getElementById('canvas' + base)
-    if (105 <= centerX && centerX < 150 && getRobot().charAt(0) === "b") {
-        x_level = 0
-    } else if (150 < centerX && centerX <= 195 && getRobot().charAt(0) === "r") {
-        x_level = 1;
-    } else {
-        //        field_component.removeAttribute('grid_coords')
-        //        drawFields();
-        return;
+    if (x_level == -1 || centerY <= 8 || centerY > 144) {
+        return
     }
     let y_level;
-    if (centerY < 30) {
-        y_level = 0
-    } else if (centerY < 60) {
-        y_level = 1
-    } else if (centerY < 90) {
-        y_level = 2
-    } else if (centerY < 120) {
-        y_level = 3
-    } else if (centerY < 150) {
-        y_level = 4
+    for (y_level = 0; y_level < ys.length - 1; y_level++) {
+        if (centerY > ys[y_level] && centerY <= ys[y_level + 1]) {
+            break;
+        }
     }
+
     field_component.setAttribute('grid_coords', `${x_level}${y_level}`)
     drawFields()
 }
@@ -2162,6 +2008,14 @@ function undo(event) {
     tempValue = Array.from(JSON.parse(changingInput.value));
     tempValue.pop();
     changingInput.value = JSON.stringify(tempValue);
+
+    let scoreloc_component = document.getElementById(undoID.id.replace("undo", "canvas"))
+    if (Array.from(JSON.parse(changingInput.value)).length == 0) {
+        scoreloc_component.setAttribute('boxes', null)
+    } else {
+        scoreloc_component.setAttribute('boxes', `${changingInput.value}`)
+    }
+
     drawFields();
 }
 

@@ -15,7 +15,7 @@ html, body {
     background-color: black;
 }
 
-#prematch_table, #postmatch_table, #auton_table, #endgame_table, #teleop_table, #testcycle_table {
+#prematch_table, #postmatch_table, #auto_table, #endgame_table, #teleop_table, #testcycle_table {
     text-align: center;
     color: white;
     border-color: pink;
@@ -79,7 +79,7 @@ html, body {
 }
 
 #prematchHeader1, #prematchHeader2,
-#autonHeader, #endgameHeader, #teleopHeader1, #teleopHeader2, #postmatchHeader {
+#autoHeader, #endgameHeader, #teleopHeader1, #teleopHeader2, #postmatchHeader {
     color: white;
     border-color: pink;
     border-width: 4px;
