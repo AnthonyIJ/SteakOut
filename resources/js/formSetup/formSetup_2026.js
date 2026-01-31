@@ -18,11 +18,11 @@ class Cycle {
         ['x', "x"] //no source
     ])
     static volley_condense_map = new Map([
-        ['10', 10],
-        ['20', 20],
-        ['30', 30],
-        ['40', 40],
-        ['50', 50],
+        ['10f', 10],
+        ['20f', 20],
+        ['30f', 30],
+        ['40f', 40],
+        ['50f', 50],
         ["x", "x"]
     ])
 
@@ -86,7 +86,7 @@ function saveCycle(code_identifier, successful) {
     let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
     let per = Form[`${code_identifier}per`]
-    let per_value = per.value
+    let per_value = parseInt(per.value.replace("%", ""))
 
     let gametime = code_identifier.endsWith('a') ? 1 : 2
 
@@ -274,7 +274,7 @@ function addBicycle(table, idx, name, data) {
       "code": "${code_identifier}scoreloc",
       "type": "scoreloc",
       "filename": "2026/field_image.png",
-      "clickRestriction": "four",
+      "clickRestriction": "none",
       "shape": "rect 4 white orangered true"
   }`)
     idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
@@ -288,13 +288,13 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}vol",
             "type": "radio",
             "choices": {
-            "10": "10<br>",
-            "20": "20<br>",
-            "30": "30<br>",
-            "40": "40<br>",
-            "50": "50"
+            "10f": "10&ensp;",
+            "40f": "40<br>",
+            "20f": "20&ensp;",
+            "50f": "50<br>",
+            "30f": "30"
             },
-            "defaultValue": "10"
+            "defaultValue": "10f"
         }`)
     } else {
         volley_data = JSON.parse(`
@@ -303,13 +303,13 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}vol",
             "type": "radio",
             "choices": {
-            "10": "10<br>",
-            "20": "20<br>",
-            "30": "30<br>",
-            "40": "40<br>",
-            "50": "50"
+            "10f": "10&ensp;",
+            "40f": "40<br>",
+            "20f": "20&ensp;",
+            "50f": "50<br>",
+            "30f": "30"
             },
-            "defaultValue": "30"
+            "defaultValue": "30f"
         }`)
     }
 
@@ -323,12 +323,12 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}per",
             "type": "radio",
             "choices": {
-                "25": "25%<br>",
-                "50": "50%<br>",
-                "75": "75%<br>",
-                "100": "100%"
+                "25%": "25%&ensp;",
+                "75%": "75%<br>",
+                "50%": "50%&ensp;",
+                "100%": "100%"
             },
-            "defaultValue": "75"
+            "defaultValue": "75%"
         }`)
     } else {
         percentage_data = JSON.parse(`
@@ -337,12 +337,12 @@ function addBicycle(table, idx, name, data) {
             "code": "${code_identifier}per",
             "type": "radio",
             "choices": {
-                "25": "25%<br>",
-                "50": "50%<br>",
-                "75": "75%<br>",
-                "100": "100%"
+                "25%": "25%&ensp;",
+                "75%": "75%<br>",
+                "50%": "50%&ensp;",
+                "100%": "100%"
             },
-            "defaultValue": "100"
+            "defaultValue": "100%"
         }`)
     }
 
@@ -1526,7 +1526,7 @@ function updateATotalFuel() {
     let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
     let per = Form[`${code_identifier}per`]
-    let per_value = per.value
+    let per_value = parseInt(per.value.replace("%", ""))
 
     break_component.setAttribute("total_fuel", (Math.round(vol_value * per_value / 100)).toString())
     break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;';
@@ -1542,7 +1542,7 @@ function updateTTotalFuel() {
     let vol_value = Cycle.volley_condense_map.get(vol.value ? vol.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
     let per = Form[`${code_identifier}per`]
-    let per_value = per.value
+    let per_value = parseInt(per.value.replace("%", ""))
 
     break_component.setAttribute("total_fuel", (Math.round(vol_value * per_value / 100)).toString())
     break_component.innerHTML = `${break_component.getAttribute("total_fuel")}` + ' Fuel&nbsp;';
