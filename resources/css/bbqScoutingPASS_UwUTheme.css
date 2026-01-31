@@ -15,7 +15,7 @@ html, body {
     background-color: black;
 }
 
-#prematch_table, #postmatch_table, #auton_table, #endgame_table, #teleop_table, #testcycle_table {
+#prematch_table, #postmatch_table, #auto_table, #endgame_table, #teleop_table, #testcycle_table {
     text-align: center;
     color: white;
     border-color: pink;
