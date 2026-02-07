@@ -88,6 +88,17 @@ const config_data = `
             "code": "teleopbicycle",
             "type": "bicycle",
             "bicycle_id": "auto"
+        },
+        {
+            "name": "Climb Status",
+            "code": "acs",
+            "type": "radio",
+            "choices": {
+                "l1": "L1",
+                "f3": "Failed<br>",
+                "x": "n/a"
+            },
+            "defaultValue": "x"
         }
     ],
     "teleop": [
