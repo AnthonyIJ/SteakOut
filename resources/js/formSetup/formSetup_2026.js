@@ -1640,7 +1640,7 @@ function getData(dataFormat) {
     }
     // normal_data;gametimes;sources;zone_ids;volleys;percentages
     //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${score_locs.join(',')}|${volleys.join(',')}|${percentages.join(',')}`
+    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${score_locs.join('*')}|${volleys.join(',')}|${percentages.join(',')}`
 }
 
 // Returns a boolean: whether data in form is valid or not
