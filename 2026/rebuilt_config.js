@@ -95,7 +95,7 @@ const config_data = `
             "type": "radio",
             "choices": {
                 "l1": "L1",
-                "f3": "Failed<br>",
+                "f1": "Failed<br>",
                 "x": "n/a"
             },
             "defaultValue": "x"
