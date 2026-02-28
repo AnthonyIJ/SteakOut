@@ -2112,14 +2112,14 @@ function flip(event) {
         flipImg.style.transform = '';
     }
 
-    let img = document.getElementById('canvas_cycleascoreloc')
+    let img = document.getElementById('canvas_ascoreloc')
     if (img.style.transform === "") {
         img.style.transform = 'rotate(180deg)';
     } else {
         img.style.transform = '';
     }
 
-    img = document.getElementById('canvas_cycletscoreloc')
+    img = document.getElementById('canvas_tscoreloc')
     if (img.style.transform === "") {
         img.style.transform = 'rotate(180deg)';
     } else {
