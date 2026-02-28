@@ -98,17 +98,17 @@ const config_data = `
             "type": "counter"
         },
         {
-            "name": "Collect from Depot",
+            "name": "Depot",
             "code": "d",
             "type": "checkbox"
         },
         {
-            "name": "Collect from Outpost",
+            "name": "Outpost",
             "code": "o",
             "type": "checkbox"
         },
         {
-            "name": "Collect from Neutral Zone",
+            "name": "Neutral Zone",
             "code": "nz",
             "type": "checkbox"
         },
