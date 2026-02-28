@@ -76,18 +76,41 @@ const config_data = `
     ],
     "auto": [
         {
-            "name": "Auto Notes",
-            "code": "an",
-            "type": "text",
-            "size": 15,
-	        "defaultValue": "",
-            "maxSize": 100
+            "name": "Auto Score Location",
+            "code": "ascoreloc",
+            "type": "scoreloc",
+            "filename": "2026/field_image.png",
+            "clickRestriction": "none",
+            "shape": "rect 4 white orangered true"
         },
         {
-            "name": "Bicycle",
-            "code": "teleopbicycle",
-            "type": "bicycle",
-            "bicycle_id": "auto"
+            "name": "Fuel Scored",
+            "code": "fsa",
+            "altInc1": 10,
+            "altInc2": 5,
+            "type": "counter"
+        },
+        {
+            "name": "Pass from Neutral Zone",
+            "code": "nza",
+            "altInc1": 10,
+            "altInc2": 5,
+            "type": "counter"
+        },
+        {
+            "name": "Collect from Depot",
+            "code": "d",
+            "type": "checkbox"
+        },
+        {
+            "name": "Collect from Outpost",
+            "code": "o",
+            "type": "checkbox"
+        },
+        {
+            "name": "Collect from Neutral Zone",
+            "code": "nz",
+            "type": "checkbox"
         },
         {
             "name": "Climb Status",
@@ -99,6 +122,14 @@ const config_data = `
                 "x": "n/a"
             },
             "defaultValue": "x"
+        },
+        {
+            "name": "Auto Notes",
+            "code": "an",
+            "type": "text",
+            "size": 15,
+	        "defaultValue": "",
+            "maxSize": 100
         }
     ],
     "teleop": [
@@ -115,10 +146,33 @@ const config_data = `
             "defaultValue": "cy"
         },
         {
-            "name": "Bicycle",
-            "code": "teleopbicycle",
-            "type": "bicycle",
-            "bicycle_id": "teleop"
+            "name": "Teleop Score Location",
+            "code": "tscoreloc",
+            "type": "scoreloc",
+            "filename": "2026/field_image.png",
+            "clickRestriction": "none",
+            "shape": "rect 4 white orangered true"
+        },
+        {
+            "name": "Fuel Scored",
+            "code": "fst",
+            "altInc1": 10,
+            "altInc2": 5,
+            "type": "counter"
+        },
+        {
+            "name": "Pass from Neutral Zone",
+            "code": "nzt",
+            "altInc1": 10,
+            "altInc2": 5,
+            "type": "counter"
+        },
+        {
+            "name": "Pass from Opponent Zone",
+            "code": "ozt",
+            "altInc1": 10,
+            "altInc2": 5,
+            "type": "counter"
         }
     ],
     "endgame": [
