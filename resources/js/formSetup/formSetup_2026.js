@@ -444,6 +444,10 @@ function addScoreLoc(table, idx, name, data) {
     canvas.innerHTML = "No canvas support";
     cell.appendChild(canvas);
 
+    if (data.code == 'ascoreloc') {
+        canvas.setAttribute("boxes", "[]");
+    }
+
     idx += 1;
     row = table.insertRow(idx);
     row.setAttribute("style", "display:none");
@@ -1777,6 +1781,8 @@ function getData(dataFormat) {
                     thisFieldValue = boxes
                 }
             }
+        } else if (fieldname === 'tscoreloc') {
+            thisFieldValue = JSON.parse(document.getElementById('canvas_tscoreloc').getAttribute('boxes'))
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
@@ -1850,6 +1856,11 @@ function clearForm() {
     }
 
     try {
+        let scoreloc = document.getElementById('canvas_ascoreloc')
+        scoreloc.setAttribute('boxes', "[]")
+        scoreloc = document.getElementById('canvas_tscoreloc')
+        scoreloc.setAttribute('boxes', "[]")
+
         // Clear XY coordinates
         inputs = document.querySelectorAll("[id*='XY_']");
         for (e of inputs) {
