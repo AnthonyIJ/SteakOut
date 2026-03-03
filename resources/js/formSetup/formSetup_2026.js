@@ -550,7 +550,7 @@ function onScoreLocClicked(event) {
         let target = event.target;
         let base = getIdBase(target.id);
         //Resolution height and width (e.g. 52x26)
-        let resX = 20;
+        let resX = 16;
         let resY = 10;
 
         //Turns coordinates into a numeric box
@@ -1693,6 +1693,90 @@ function getData(dataFormat) {
             if (getRobot().charAt(0) === 'b') {
                 thisFieldValue = -thisFieldValue + 4;
             }
+        } else if (fieldname === 'ascoreloc') { //lowkey all vibe-coded glhf whoever's next :D
+            let field = document.getElementById('canvas_ascoreloc')
+            let boxes = JSON.parse(field.getAttribute('boxes'))
+
+            if (boxes != null) {
+                if (boxes.length > 1) {
+                    thisFieldValue = [boxes[0]]
+                    for (let i = 0; i < boxes.length - 1; i++) {
+                        let reverse = false;
+                        let reverseBoxes = [];
+
+                        let y1 = Math.ceil(boxes[i] / 16);
+                        let x1 = boxes[i] % 16;
+                        x1 = x1 == 0 ? 16 : x1;
+
+                        let y2 = Math.ceil(boxes[i + 1] / 16);
+                        let x2 = boxes[i + 1] % 16;
+                        x2 = x2 == 0 ? 16 : x2;
+
+                        if (x1 == x2 && y1 == y2)
+                            continue;
+                        if (x1 == x2) {
+                            if (y1 > y2) {
+                                for (let y = y1; y >= y2; y--)
+                                    if (thisFieldValue[thisFieldValue.length - 1] != x1 + 16 * (y - 1))
+                                        thisFieldValue.push(x1 + 16 * (y - 1))
+                            } else
+                                for (let y = y1; y <= y2; y++)
+                                    if (thisFieldValue[thisFieldValue.length - 1] != x1 + 16 * (y - 1))
+                                        thisFieldValue.push(x1 + 16 * (y - 1))
+                        } else if (y1 == y2) {
+                            if (x1 > x2) {
+                                for (let x = x1; x >= x2; x--)
+                                    if (thisFieldValue[thisFieldValue.length - 1] != x + 16 * (y1 - 1))
+                                        thisFieldValue.push(x + 16 * (y1 - 1))
+                            } else
+                                for (let x = x1; x <= x2; x++)
+                                    if (thisFieldValue[thisFieldValue.length - 1] != x + 16 * (y1 - 1))
+                                        thisFieldValue.push(x + 16 * (y1 - 1))
+                        } else {
+                            if (x2 < x1) {
+                                reverse = true;
+
+                                let y = y1;
+                                y1 = y2;
+                                y2 = y;
+
+                                let x = x1;
+                                x1 = x2;
+                                x2 = x
+                            }
+
+                            let yOffset;
+                            if (y2 > y1) yOffset = 1;
+                            if (y2 < y1) yOffset = -1;
+
+                            let slope = (y2 - y1 + yOffset) / (x2 - x1 + 1);
+
+                            for (let x = 0; x <= x2 - x1 + 1; x += 0.1) {
+                                let boxXOffset = Math.floor(x)
+                                let boxYOffset = slope > 0 ? Math.floor(x * slope) : Math.ceil(x * slope)
+                                let box = x1 + boxXOffset + 16 * (y1 + boxYOffset - 1);
+
+                                if (reverse) {
+                                    if (reverseBoxes[reverseBoxes.length - 1] != box && box <= 160 && box > 0)
+                                        reverseBoxes.push(box)
+                                } else {
+                                    if (thisFieldValue[thisFieldValue.length - 1] != box && box <= 160 && box > 0)
+                                        thisFieldValue.push(box)
+                                }
+                            }
+
+                            if (reverse) {
+                                for (let ri = reverseBoxes.length - 1; ri >= 0; ri--) {
+                                    if (thisFieldValue[thisFieldValue.length - 1] != reverseBoxes[ri])
+                                        thisFieldValue.push(reverseBoxes[ri])
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    thisFieldValue = boxes
+                }
+            }
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
@@ -1882,8 +1966,8 @@ function clearForm() {
 
 //auto start rectangles
 let autoBoxWidth = 30;
-let ys = [8, 30, 66, 84, 120];
-let heights = [22, 36, 18, 36, 22];
+let ys = [0, 26, 65, 86, 123];
+let heights = [26, 38, 21, 38, 26];
 
 // Draw fields on
 function drawFields(name) {
@@ -1899,7 +1983,7 @@ function drawFields(name) {
         ctx.drawImage(img, 0, 0, f.width, f.height);
 
         if (shapeArr[0].toLowerCase() === 'circle') {
-            for (let x = 78 - autoBoxWidth; x < 226; x += autoBoxWidth + 147) {
+            for (let x = 76 - autoBoxWidth; x < 225; x += autoBoxWidth + 148) {
                 for (let y = 0; y < ys.length; y++) {
                     rectangle(ctx, x, ys[y], autoBoxWidth, heights[y], false);
                 }
@@ -1921,7 +2005,7 @@ function drawFields(name) {
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auto start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = (centerX < 78 && centerX > 78 - autoBoxWidth) ? 78 - autoBoxWidth : ((centerX > 225 && centerX < 225 + autoBoxWidth) ? 225 : -1);
+                    let x_level = (centerX < 76 && centerX > 76 - autoBoxWidth) ? 76 - autoBoxWidth : ((centerX > 224 && centerX < 224 + autoBoxWidth) ? 224 : -1);
                     let y_level;
                     if (x_level === -1 || (x_level == 225 && getRobot().charAt(0) === "r") || (x_level == 78 - autoBoxWidth && getRobot().charAt(0) === "b")) { continue; }
                     for (y_level = 0; y_level < ys.length - 1; y_level++) {
@@ -1938,22 +2022,21 @@ function drawFields(name) {
                     ctx.beginPath()
                     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
                     ctx.fill()
-                    ctx.stroke()
 
-                    /*
-                    if (prevX != null && prevY != null) {
-                        ctx.moveTo(prevX, prevY)
-                        ctx.lineTo(centerX, centerY)
+                    if (code == "ascoreloc") {
+                        if (prevX != null && prevY != null) {
+                            ctx.moveTo(prevX, prevY)
+                            ctx.lineTo(centerX, centerY)
+                        }
+
+                        ctx.closePath()
+
+                        prevX = centerX;
+                        prevY = centerY;
                     }
 
-                    ctx.closePath()
-
                     ctx.stroke()
 
-
-                    prevX = centerX;
-                    prevY = centerY;
-                    */
                 }
             }
         }
