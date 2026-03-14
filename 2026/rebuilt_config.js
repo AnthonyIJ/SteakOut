@@ -18,7 +18,7 @@ const config_data = `
             "name": "Event",
             "code": "e",
             "type": "event",
-            "defaultValue": "2026txbel",
+            "defaultValue": "2026txfor",
             "size": 10,
             "required": "true"
         },
