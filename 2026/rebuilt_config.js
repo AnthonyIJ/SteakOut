@@ -76,7 +76,7 @@ const config_data = `
     ],
     "auto": [
         {
-            "name": "Auto Score Location",
+            "name": "Auto Path",
             "code": "ascoreloc",
             "type": "scoreloc",
             "filename": "2026/field_image.png",

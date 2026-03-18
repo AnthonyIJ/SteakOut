@@ -1777,12 +1777,24 @@ function getData(dataFormat) {
                             }
                         }
                     }
+                    try {
+                        thisFieldValue = String(thisFieldValue).replaceAll(",", "*")
+                    } catch (e) {
+                        alert(e)
+                    }
                 } else {
                     thisFieldValue = boxes
                 }
             }
         } else if (fieldname === 'tscoreloc') {
             thisFieldValue = JSON.parse(document.getElementById('canvas_tscoreloc').getAttribute('boxes'))
+            if (thisFieldValue != null) {
+                try {
+                    thisFieldValue = String(thisFieldValue).replaceAll(",", "*")
+                } catch (e) {
+                    alert(e)
+                }
+            }
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
