@@ -18,7 +18,7 @@ const config_data = `
             "name": "Event",
             "code": "e",
             "type": "event",
-            "defaultValue": "2026txfor",
+            "defaultValue": "2026txcmp2",
             "size": 10,
             "required": "true"
         },
@@ -75,14 +75,6 @@ const config_data = `
         }
     ],
     "auto": [
-        {
-            "name": "Auto Path",
-            "code": "ascoreloc",
-            "type": "scoreloc",
-            "filename": "2026/field_image.png",
-            "clickRestriction": "none",
-            "shape": "rect 4 white orangered true"
-        },
         {
             "name": "Fuel Scored",
             "code": "fsa",
@@ -144,14 +136,6 @@ const config_data = `
                 "de": "Defense"
             },
             "defaultValue": "cy"
-        },
-        {
-            "name": "Teleop Score Location",
-            "code": "tscoreloc",
-            "type": "scoreloc",
-            "filename": "2026/field_image.png",
-            "clickRestriction": "none",
-            "shape": "rect 4 white orangered true"
         },
         {
             "name": "Fuel Scored",

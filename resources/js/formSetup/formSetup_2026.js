@@ -1868,10 +1868,12 @@ function clearForm() {
     }
 
     try {
+        /*
         let scoreloc = document.getElementById('canvas_ascoreloc')
         scoreloc.setAttribute('boxes', "[]")
         scoreloc = document.getElementById('canvas_tscoreloc')
         scoreloc.setAttribute('boxes', "[]")
+        */// removed auto pathing and teleop score loc
 
         // Clear XY coordinates
         inputs = document.querySelectorAll("[id*='XY_']");
@@ -2218,6 +2220,7 @@ function flip(event) {
         flipImg.style.transform = '';
     }
 
+    /*
     let img = document.getElementById('canvas_ascoreloc')
     if (img.style.transform === "") {
         img.style.transform = 'rotate(180deg)';
@@ -2231,6 +2234,7 @@ function flip(event) {
     } else {
         img.style.transform = '';
     }
+    */// removed auto pathing and teleop score loc
 
     drawFields();
 }
